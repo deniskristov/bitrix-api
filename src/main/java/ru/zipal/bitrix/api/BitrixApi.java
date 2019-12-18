@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class BitrixApi<User, Activity, Contact extends HasId, Lead extends HasId, Company extends HasId, Deal extends HasId> {
+public class BitrixApi<User, Activity, Contact extends HasId, Lead extends HasId, Company extends HasId, Deal extends HasId, UserEnumField extends HasId> {
     private final BitrixClient client;
     private final Serializer serializer;
     private final String domain;
@@ -24,8 +24,9 @@ public class BitrixApi<User, Activity, Contact extends HasId, Lead extends HasId
     private final Class<Lead> leadClass;
     private final Class<Company> companyClass;
     private final Class<Deal> dealClass;
+    private final Class<UserEnumField> userEnumFieldClass;
 
-    protected BitrixApi(BitrixClient client, Serializer serializer, String domain, Class<User> userClass, Class<Activity> activityClass, Class<Contact> contactClass, Class<Lead> leadClass, Class<Company> companyClass, Class<Deal> dealClass) {
+    protected BitrixApi(BitrixClient client, Serializer serializer, String domain, Class<User> userClass, Class<Activity> activityClass, Class<Contact> contactClass, Class<Lead> leadClass, Class<Company> companyClass, Class<Deal> dealClass, Class<UserEnumField> userEnumFieldClass) {
         this.client = client;
         this.serializer = serializer;
         this.domain = domain;
@@ -35,14 +36,15 @@ public class BitrixApi<User, Activity, Contact extends HasId, Lead extends HasId
         this.userClass = userClass;
         this.companyClass = companyClass;
         this.dealClass = dealClass;
+        this.userEnumFieldClass = userEnumFieldClass;
     }
 
-    public static BitrixApi<BitrixUser, BitrixActivity, BitrixContact, BitrixLead, BitrixCompany, BitrixDeal> createDefault(BitrixClient client, Serializer serializer, String domain) {
-        return new BitrixApi<>(client, serializer, domain, BitrixUser.class, BitrixActivity.class, BitrixContact.class, BitrixLead.class, BitrixCompany.class, BitrixDeal.class);
+    public static BitrixApi<BitrixUser, BitrixActivity, BitrixContact, BitrixLead, BitrixCompany, BitrixDeal, BitrixUserEnumField> createDefault(BitrixClient client, Serializer serializer, String domain) {
+        return new BitrixApi<>(client, serializer, domain, BitrixUser.class, BitrixActivity.class, BitrixContact.class, BitrixLead.class, BitrixCompany.class, BitrixDeal.class, BitrixUserEnumField.class);
     }
 
-    public static <User, Activity, Contact extends HasId, Lead extends HasId, Company extends HasId, Deal extends HasId> BitrixApi<User, Activity, Contact, Lead, Company, Deal> custom(BitrixClient client, Serializer serializer, String domain, Class<User> userClass, Class<Activity> activityClass, Class<Contact> contactClass, Class<Lead> leadClass, Class<Company> companyClass, Class<Deal> dealClass) {
-        return new BitrixApi<>(client, serializer, domain, userClass, activityClass, contactClass, leadClass, companyClass, dealClass);
+    public static <User, Activity, Contact extends HasId, Lead extends HasId, Company extends HasId, Deal extends HasId, UserEnumField extends HasId> BitrixApi<User, Activity, Contact, Lead, Company, Deal, UserEnumField> custom(BitrixClient client, Serializer serializer, String domain, Class<User> userClass, Class<Activity> activityClass, Class<Contact> contactClass, Class<Lead> leadClass, Class<Company> companyClass, Class<Deal> dealClass, Class<UserEnumField> userEnumFieldClass) {
+        return new BitrixApi<>(client, serializer, domain, userClass, activityClass, contactClass, leadClass, companyClass, dealClass, userEnumFieldClass);
     }
 
     public BitrixPage<Contact> listContacts(Integer start, NameValuePair... additional) throws BitrixApiException {
@@ -193,6 +195,20 @@ public class BitrixApi<User, Activity, Contact extends HasId, Lead extends HasId
 
     public Long createDeal(Deal deal) throws BitrixApiException {
         return client.execute(domain, "crm.deal.add", serializer.serialize(deal)).getLong("result");
+    }
+
+    public void updateDeal(Deal deal) throws BitrixApiException {
+        final List<NameValuePair> params = serializer.serialize(deal);
+        params.add(new BasicNameValuePair("id", Long.toString(deal.getId())));
+        client.execute(domain, "crm.deal.update", params);
+    }
+
+    public UserEnumField getContactUserEnumField(long id) throws BitrixApiException {
+        return serializer.deserialize(userEnumFieldClass, client.execute(domain, "crm.contact.userfield.get", Collections.singletonList(new BasicNameValuePair("id", Long.toString(id)))).getJSONObject("result"));
+    }
+
+    public UserEnumField getDealUserEnumField(long id) throws BitrixApiException {
+        return serializer.deserialize(userEnumFieldClass, client.execute(domain, "crm.deal.userfield.get", Collections.singletonList(new BasicNameValuePair("id", Long.toString(id)))).getJSONObject("result"));
     }
 
     public void bindEvent(String event, String handler) throws BitrixApiException {
