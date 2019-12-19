@@ -1,17 +1,12 @@
 package ru.zipal.bitrix.api.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.zipal.bitrix.api.common.FieldName;
+import ru.zipal.bitrix.api.model.enums.OwnerType;
 
 import java.util.List;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class BitrixUserEnumField implements HasId {
     private Long id;
     @FieldName("ENTITY_ID")
@@ -20,5 +15,5 @@ public class BitrixUserEnumField implements HasId {
     private String fieldName;
     @FieldName("LIST")
     private List<BitrixEnum> enums;
-
+    private OwnerType ownerType;
 }
