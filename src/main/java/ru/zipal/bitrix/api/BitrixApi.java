@@ -207,8 +207,20 @@ public class BitrixApi<User, Activity, Contact extends HasId, Lead extends HasId
         return serializer.deserialize(userEnumFieldClass, client.execute(domain, "crm.contact.userfield.get", Collections.singletonList(new BasicNameValuePair("id", Long.toString(id)))).getJSONObject("result"));
     }
 
+    public void updateContactUserEnumField(UserEnumField userField) throws BitrixApiException {
+        final List<NameValuePair> params = serializer.serialize(userField);
+        params.add(new BasicNameValuePair("id", Long.toString(userField.getId())));
+        client.execute(domain, "crm.contact.userfield.update", params);
+    }
+
     public UserEnumField getDealUserEnumField(long id) throws BitrixApiException {
         return serializer.deserialize(userEnumFieldClass, client.execute(domain, "crm.deal.userfield.get", Collections.singletonList(new BasicNameValuePair("id", Long.toString(id)))).getJSONObject("result"));
+    }
+
+    public void updateDealUserEnumField(UserEnumField userField) throws BitrixApiException {
+        final List<NameValuePair> params = serializer.serialize(userField);
+        params.add(new BasicNameValuePair("id", Long.toString(userField.getId())));
+        client.execute(domain, "crm.deal.userfield.update", params);
     }
 
     public void bindEvent(String event, String handler) throws BitrixApiException {

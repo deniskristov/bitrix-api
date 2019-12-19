@@ -13,9 +13,11 @@ import ru.zipal.bitrix.api.common.FieldName;
 public class BitrixEnum {
     private Long id;
     @FieldName("SORT")
-    private Integer sort;
+    @Builder.Default
+    private Integer sort = 10;
     @FieldName("VALUE")
     private String value;
     @FieldName("DEF")
-    private String def;
+    @Builder.Default
+    private String def = "N";
 }

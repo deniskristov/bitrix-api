@@ -34,4 +34,6 @@ public class BitrixContact implements HasId {
 	private List<BitrixCommunication> phones = new ArrayList<>();
 	@FieldName("EMAIL")
 	private List<BitrixCommunication> emails = new ArrayList<>();
+    @FieldName("UF_CRM_1576654517")
+    private Long statusId;
 }

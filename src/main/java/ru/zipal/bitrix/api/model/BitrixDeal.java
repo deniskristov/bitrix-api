@@ -63,6 +63,8 @@ public class BitrixDeal implements HasId {
     private String pct;
     @FieldName("UF_CRM_1574242554")
     private String fine;
+    @FieldName("UF_CRM_1574683759")
+    private Long statusId;
 
 
     public enum Currency {
