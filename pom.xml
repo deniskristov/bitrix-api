@@ -3,9 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>ru.zipal.bitrix</groupId>
+	<groupId>com.gopawnshop</groupId>
 	<artifactId>bitrix-api</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.1</version>
 
 	<properties>
 		<lombok.version>1.18.10</lombok.version>
@@ -37,17 +37,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<distributionManagement>
-		<repository>
-			<id>roborox-releases</id>
-			<url>${roborox.nexus.url}/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>roborox-snapshots</id>
-			<url>${roborox.nexus.url}/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 
 	<dependencies>
 		<dependency>
@@ -88,4 +77,11 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>Bitrix API</name>
+			<url>https://maven.pkg.github.com/deniskristov/bitrix-api</url>
+		</repository>
+	</distributionManagement>
 </project>

@@ -20,20 +20,30 @@ public class BitrixHttpClient {
     public static final Logger logger = LoggerFactory.getLogger(BitrixHttpClient.class);
 
     public static final int TIMEOUT = 30000;
+    public static final int NO_REQUEST_DELAY = 0;
     public static final Charset UTF_8 = Charset.forName("UTF-8");
 
     private final boolean logResponse;
+    // To control a requests-per-second limit
+    private final int requestDelay;
 
     public BitrixHttpClient() {
-        this(false);
+        this(false, NO_REQUEST_DELAY);
     }
 
-    public BitrixHttpClient(boolean logResponse) {
+    public BitrixHttpClient(boolean logResponse, int requestDelay) {
         this.logResponse = logResponse;
+        this.requestDelay = requestDelay;
     }
 
     private JSONObject execute(Request request) throws BitrixApiException {
         try {
+            if (requestDelay != NO_REQUEST_DELAY) {
+                try {
+                    Thread.sleep(requestDelay);
+                } catch (InterruptedException e) {
+                }
+            }
             final BitrixResponse response = request.socketTimeout(TIMEOUT).connectTimeout(TIMEOUT).execute().handleResponse(new BitrixResponseHandler(logResponse));
             if (response instanceof SuccessBitrixResponse) {
                 return ((SuccessBitrixResponse) response).getResult();
